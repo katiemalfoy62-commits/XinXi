@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>缓一缓 · 情绪日记与自我关怀</title>
+<meta name="description" content="说一句就好。记录情绪、看见触发因素、用冥想/声音/运动照顾自己。">
+<meta name="theme-color" content="#FBF3EA">
+<style>
+:root{--bg:#FBF3EA;--card:#FFFCF8;--ink:#4A3B32;--sub:#8C7A6E;--line:#EEDFD0;--accent:#E07A50;--accent2:#F2B58C;--soft:#FCE6D6;--green:#7FB08A}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+.app{max-width:480px;margin:0 auto;min-height:100vh;padding:18px 16px 100px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.logo{font-weight:700;font-size:19px;display:flex;align-items:center;gap:8px}
+.logo i{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFD9BC,var(--accent));display:inline-block;box-shadow:0 0 0 5px var(--soft)}
+.date{color:var(--sub);font-size:13px}
+h1{font-size:23px;font-weight:700;margin-bottom:2px}
+h2{font-size:17px;margin-bottom:4px}
+.hint{color:var(--sub);font-size:13.5px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:14px;box-shadow:0 4px 18px rgba(160,110,70,.06)}
+.label{font-size:14px;font-weight:600;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.label small{font-weight:400;color:var(--sub);font-size:12px}
+.moods{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mood{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:9px 0 5px;text-align:center;cursor:pointer;font-size:13px;transition:.15s}
+.mood b{display:block;font-size:24px;font-weight:400;line-height:1.25}
+.mood.on{border-color:var(--accent);background:var(--soft);transform:translateY(-1px)}
+.levels{display:flex;gap:6px;margin-top:12px;align-items:center}
+.levels span{font-size:12px;color:var(--sub);white-space:nowrap}
+.lv{flex:1;height:32px;border-radius:10px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font-size:13px;color:var(--sub)}
+.lv.on{background:var(--accent);border-color:var(--accent);color:#fff}
+textarea,input[type=text]{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:11px 12px;font:inherit;font-size:15px;background:#fff;color:var(--ink);resize:none;outline:none}
+textarea:focus,input[type=text]:focus{border-color:var(--accent2)}
+.tags{display:flex;flex-wrap:wrap;gap:7px}
+.tag{padding:4px 12px;border-radius:99px;border:1.5px solid var(--line);background:#fff;font-size:13px;cursor:pointer}
+.tag.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tag.auto::after{content:" ✦";color:var(--accent2)}
+.modes{display:grid;gap:8px}
+.mode{display:flex;gap:12px;align-items:center;text-align:left;border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:11px 12px;cursor:pointer;transition:.15s}
+.mode:hover,.mode:active{border-color:var(--accent);background:var(--soft)}
+.mode .ic{font-size:22px;width:30px;text-align:center}
+.mode b{display:block;font-size:15px}
+.mode span{font-size:12px;color:var(--sub)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:14px;padding:11px 16px;font-size:15px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff}
+.btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:11px}
+.btn.block{width:100%}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row>.btn{flex:1}
+.bubble{background:var(--soft);border-radius:4px 18px 18px 18px;padding:14px 15px;white-space:pre-wrap;font-size:15px;line-height:1.75}
+.who{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);margin-bottom:8px}
+.who i{width:22px;height:22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#FFD9BC,var(--accent))}
+.me{background:#fff;border:1px solid var(--line);border-radius:18px 4px 18px 18px;padding:10px 14px;margin:10px 0 10px auto;max-width:85%;font-size:14.5px;width:fit-content}
+.tools{display:grid;gap:9px}
+.tool{display:flex;gap:12px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:12px;cursor:pointer;text-align:left;width:100%;transition:.15s}
+.tool:hover{border-color:var(--accent2)}
+.tool .ti{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;flex:none}
+.tool b{font-size:15px}
+.tool .meta{font-size:12px;color:var(--sub)}
+.tool .why{font-size:11.5px;color:var(--accent);margin-top:1px}
+.c冥想{background:#EAF1E6}.c声音{background:#E6EEF6}.c运动{background:#FCE6D6}.c理一理{background:#F3EAF6}
+.fb{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fb button{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:10px 0;cursor:pointer;font-size:13.5px}
+.fb button b{display:block;font-size:22px;font-weight:400}
+.fb button.on{border-color:var(--accent);background:var(--soft)}
+.sos{display:block;text-align:center;font-size:12.5px;color:var(--sub);margin-top:16px;text-decoration:underline;cursor:pointer;background:none;border:none;width:100%}
+.foot{font-size:11.5px;color:var(--sub);text-align:center;margin-top:20px;line-height:1.7}
+nav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,252,248,.94);backdrop-filter:blur(10px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom);z-index:5}
+nav div{max-width:480px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+nav button{background:none;border:none;padding:9px 0 8px;font-size:12px;color:var(--sub);cursor:pointer}
+nav button b{display:block;font-size:20px;font-weight:400;filter:grayscale(1);opacity:.6}
+nav button.on{color:var(--accent);font-weight:600}
+nav button.on b{filter:none;opacity:1}
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:22px 2px 8px}
+.sec h3{font-size:15px}
+.sec span{font-size:12px;color:var(--sub)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.stats div{background:#fff;border-radius:14px;padding:10px 4px;border:1px solid var(--line)}
+.stats b{display:block;font-size:20px}
+.stats span{font-size:11.5px;color:var(--sub)}
+.bar{display:flex;align-items:center;gap:8px;font-size:13px;margin:7px 0}
+.bar .n{width:36px;flex:none}
+.bar .track{flex:1;height:10px;border-radius:9px;background:#F4EAE0;overflow:hidden}
+.bar .fill{height:100%;border-radius:9px;background:linear-gradient(90deg,var(--accent2),var(--accent))}
+.bar .c{width:92px;flex:none;font-size:11.5px;color:var(--sub);text-align:right}
+.insight{display:flex;gap:10px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.insight:last-child{border:none}
+.insight i{font-style:normal;font-size:18px}
+.entry{display:flex;gap:11px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.entry:last-child{border:none}
+.entry .em{font-size:26px;line-height:1.1}
+.entry .tx{font-size:14px;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.entry .mt{font-size:12px;color:var(--sub)}
+.pill{display:inline-block;font-size:11px;padding:0 7px;border-radius:99px;background:#F4EAE0;color:var(--sub);margin-left:4px}
+.banner{background:#FFF3D6;border:1px solid #F4DFA8;color:#7A6232;font-size:12.5px;border-radius:12px;padding:8px 12px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.banner button{background:none;border:none;color:var(--accent);font-weight:600;cursor:pointer;font-size:12.5px;white-space:nowrap}
+.mask{position:fixed;inset:0;background:rgba(74,59,50,.38);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.mask.show{display:flex}
+.sheet{background:var(--bg);width:100%;max-width:480px;max-height:92vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px 18px calc(22px + env(safe-area-inset-bottom));animation:up .25s ease}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+.sheet .x{float:right;background:#fff;border:1px solid var(--line);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px}
+.stage{text-align:center;padding:16px 0 6px}
+.orb{width:170px;height:170px;margin:18px auto;border-radius:50%;background:radial-gradient(circle at 40% 35%,#FFE2CC,#F2B58C 60%,#E07A50);display:grid;place-items:center;color:#fff;font-size:19px;font-weight:600;transform:scale(.6);transition-property:transform;transition-timing-function:ease-in-out;box-shadow:0 0 0 18px rgba(242,181,140,.18),0 0 0 40px rgba(242,181,140,.09)}
+.big{font-size:54px;line-height:1.2}
+.prog{height:6px;background:#F4EAE0;border-radius:6px;overflow:hidden;margin:14px 0}
+.prog div{height:100%;background:var(--accent);width:0;transition:width 1s linear}
+.wave{display:flex;gap:5px;justify-content:center;align-items:flex-end;height:60px;margin:20px 0}
+.wave i{width:6px;border-radius:4px;background:var(--accent2);height:12px}
+.wave.on i{animation:w 1.2s ease-in-out infinite}
+@keyframes w{50%{height:56px;background:var(--accent)}}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:9px 16px;border-radius:99px;font-size:13.5px;z-index:40;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.crisis{background:#FFF6F2;border:1.5px solid #F2C2AE;border-radius:16px;padding:14px;margin:12px 0}
+.crisis a{display:flex;justify-content:space-between;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px;text-decoration:none;color:var(--ink)}
+.crisis a b{color:var(--accent);font-size:17px}
+.letter{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;font-size:15.5px;line-height:1.9;white-space:pre-wrap;margin:12px 0;background-image:repeating-linear-gradient(transparent 0 28px,#F4EAE0 28px 29px)}
+.hide{display:none!important}
+svg text{font-family:inherit}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo"><i></i>缓一缓</div>
+    <div class="date" id="today"></div>
+  </header>
+  <main id="view"></main>
+</div>
+<nav><div>
+  <button data-tab="now" class="on"><b>🌤️</b>此刻</button>
+  <button data-tab="tools"><b>🧺</b>工具箱</button>
+  <button data-tab="review"><b>📖</b>回看</button>
+</div></nav>
+<div class="mask" id="mask"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ========== 数据定义 ========== */
+const MOODS=[
+ {k:'焦虑',e:'😟',v:-1,c:'#E9A23B'},{k:'低落',e:'😔',v:-1,c:'#7FA4C6'},{k:'烦躁',e:'😤',v:-1,c:'#E07A50'},{k:'疲惫',e:'😮‍💨',v:-.7,c:'#A99AC9'},
+ {k:'说不清',e:'🌫️',v:0,c:'#B8A99A'},{k:'平静',e:'😌',v:.7,c:'#7FB08A'},{k:'开心',e:'😊',v:1,c:'#F2C14E'},{k:'感激',e:'🥰',v:1,c:'#E88FA0'}];
+const MOOD=Object.fromEntries(MOODS.map(m=>[m.k,m]));
+const TRIG={学业:/考试|作业|论文|期末|上课|老师|成绩|学习|考研|绩点|答辩|复习|挂科|导师/,工作:/工作|领导|老板|加班|汇报|同事|项目|面试|实习|绩效|ddl|deadline|方案|上班|offer/i,人际:/朋友|室友|吵架|社交|误会|关系|孤独|冷落|群里|聚会|被说|别人/,家庭:/爸|妈|家里|父母|家人|催婚|亲戚/,恋爱:/男朋友|女朋友|对象|分手|喜欢的人|暧昧|恋爱|前任/,身体:/头疼|生病|身体|胃|疼|不舒服|感冒|发烧/,睡眠:/失眠|熬夜|睡不着|没睡|睡眠|早醒|困/,金钱:/钱|房租|工资|花呗|还款|穷|消费|存款/};
+const TRIGS=[...Object.keys(TRIG),'说不清'];
+const CRISIS=/自杀|不想活|想死|去死|结束生命|轻生|割腕|跳楼|活着没意思|活着没有意义|消失就好了|不想醒来/;
+const MODES={listen:{ic:'👂',n:'听我说说',d:'先被听见，不急着给建议'},clarify:{ic:'🧶',n:'帮我理清',d:'把乱糟糟的想法分开看看'},act:{ic:'🌱',n:'给我一个小行动',d:'现在就能做的一件小事'}};
+
+const TOOLS={
+ box:{cat:'冥想',ic:'🫧',name:'方块呼吸',time:'2 分钟',desc:'吸 4 秒 · 停 4 秒 · 呼 4 秒 · 停 4 秒，让心跳慢下来',type:'breath',pattern:[['吸气',4],['停一停',4],['呼气',4],['停一停',4]],rounds:6},
+ b478:{cat:'冥想',ic:'🌙',name:'4-7-8 助眠呼吸',time:'1.5 分钟',desc:'延长呼气，适合睡前和紧张时',type:'breath',pattern:[['吸气',4],['屏息',7],['慢慢呼气',8]],rounds:4},
+ ground:{cat:'冥想',ic:'🍃',name:'5-4-3-2-1 感官着陆',time:'3 分钟',desc:'把注意力从脑子里拉回到身边',type:'steps',steps:[['👀','看见 5 样','找出 5 样你能看到的东西，在心里说出它们的名字',40],['✋','触碰 4 样','感受 4 样你能碰到的东西：衣服、桌面、椅背……',35],['👂','听见 3 种','留意 3 种声音，远的近的都算',30],['🌸','闻到 2 种','找 2 种气味；闻不到，就回想一个喜欢的味道',25],['💛','对自己说 1 句','轻轻对自己说：「我在这里，此刻我是安全的。」',20]]},
+ scan:{cat:'冥想',ic:'🛋️',name:'身体扫描',time:'3 分钟',desc:'从头到脚慢慢放松，适合疲惫和紧绷',type:'steps',steps:[['🙂','头和脸','闭上眼，感受额头、眉心、下巴，让它们松开',30],['💗','肩膀和胸口','肩膀往下沉，感受胸口随呼吸起伏',35],['🤲','手臂','从上臂到指尖，想象有一股暖意慢慢流过',30],['🌿','腹部','手放在肚子上，感受它的鼓起与回落',35],['🦶','双腿','从大腿到脚趾，让它们沉沉地放着',35],['🌙','整个身体','感受身体被椅子或床稳稳托住，休息一下',25]]},
+ rain:{cat:'声音',ic:'🌧️',name:'窗外的雨',time:'想听多久都行',desc:'柔和的雨声，盖住脑子里的嘈杂',type:'sound',sound:'rain'},
+ brown:{cat:'声音',ic:'🎧',name:'棕噪音专注',time:'想听多久都行',desc:'低沉稳定的声音，烦躁时帮你专注',type:'sound',sound:'brown'},
+ warm:{cat:'声音',ic:'🎹',name:'温柔和弦',time:'想听多久都行',desc:'缓慢起伏的暖色和弦，陪你待一会儿',type:'sound',sound:'pad'},
+ stretch:{cat:'运动',ic:'🙆',name:'2 分钟肩颈拉伸',time:'2 分钟',desc:'久坐、紧绷的时候，把身体松开',type:'steps',steps:[['🙆','耸肩','吸气耸肩到耳朵，呼气放下，重复 5 次',25],['↪️','左侧颈部','右手轻放头顶，向右侧拉伸左侧颈部',20],['↩️','右侧颈部','换手，拉伸右侧颈部',20],['🔄','转肩','双肩向后画大圈 8 次',20],['🙌','向上伸展','十指交叉向上推，把整个人拉长',20]]},
+ walk:{cat:'运动',ic:'🚶',name:'10 分钟快走',time:'10 分钟',desc:'动起来、晒晒光，低落时很有用',type:'steps',steps:[['👟','出发','穿上鞋走出门，在走廊里走也可以',30],['🚶','快走','用「有点喘但还能说话」的速度走 4 分钟',240],['☀️','抬头看看','放慢一点，看看天空、树和远处',120],['🌬️','慢慢回来','往回走，感受身体是不是暖起来了',210]]},
+ shake:{cat:'运动',ic:'🌀',name:'60 秒抖一抖',time:'1 分钟',desc:'烦躁时，把多余的能量甩出去',type:'steps',steps:[['🖐️','甩手','站起来，用力甩手 15 秒',15],['🦵','抖腿','轮流抖动双腿 15 秒',15],['🌀','全身抖','全身一起抖，像小狗甩水一样',20],['😮‍💨','长呼气','停下来，长长地呼一口气',10]]},
+ step:{cat:'理一理',ic:'🧩',name:'拆成一小步',time:'3 分钟',desc:'把一团乱麻，变成 5 分钟能做的一件事',type:'think'},
+ kind:{cat:'理一理',ic:'💌',name:'像对朋友一样对自己',time:'2 分钟',desc:'自我关怀练习：换个角度，对自己说句话',type:'kind'}
+};
+const CATS=['冥想','声音','运动','理一理'];
+const REC={焦虑:['box','ground','step','rain','walk'],低落:['walk','warm','kind','stretch','ground'],烦躁:['shake','brown','walk','box','step'],疲惫:['scan','stretch','b478','rain'],说不清:['ground','kind','rain','walk'],平静:['scan','warm','kind'],开心:['kind','walk','warm'],感激:['kind','warm','walk']};
+const MODECAT={listen:['冥想','声音'],clarify:['理一理','冥想'],act:['运动','理一理']};
+const TRIGBOOST={睡眠:['b478','rain','scan'],学业:['step','brown'],工作:['step','stretch'],人际:['kind','walk'],身体:['scan','stretch'],家庭:['kind','ground'],恋爱:['kind','walk'],金钱:['step','ground']};
+
+/* ========== 存储 ========== */
+const KEY='huanhuan_v1';
+let DB;
+function load(){try{DB=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!DB||!DB.entries){DB=sample()}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}}
+function sample(){
+ const now=Date.now(),D=864e5;
+ const s=[[13,21,'焦虑',4,'下周期末考试，复习进度只有一半，越看越慌',['学业'],'act','box','better'],[12,23,'疲惫',3,'又熬夜赶作业到一点，起床头好疼',['睡眠','学业'],'listen','scan','same'],[11,19,'开心',4,'和室友去吃了火锅，好久没笑这么多',['人际'],'listen',null,null],[10,22,'烦躁',4,'小组作业有人一直不回消息，全压在我身上',['人际','学业'],'act','shake','better'],[9,20,'低落',3,'看到同学都拿到实习了，感觉自己好差劲',['工作'],'listen','walk','better'],[8,14,'平静',3,'下午在图书馆把一章复习完了',['学业'],'clarify',null,null],[7,22,'焦虑',5,'明天就考试了，脑子一片空白，怕挂科',['学业'],'act','ground','better'],[6,18,'疲惫',4,'考完了但是整个人被掏空',['学业','身体'],'listen','b478','same'],[5,23,'低落',4,'妈妈打电话问成绩，不知道怎么开口',['家庭','学业'],'clarify','walk','better'],[4,20,'说不清',2,'就是有点空，说不上来哪里不对',[],'listen','rain','same'],[3,9,'焦虑',3,'实习面试要准备自我介绍，很怕卡壳',['工作'],'act','step','better'],[3,21,'感激',4,'面试官人很好，学姐还帮我改了简历',['工作','人际'],'listen',null,null],[2,23,'烦躁',3,'室友打游戏到很晚，睡不着',['人际','睡眠'],'act','brown','worse'],[1,19,'平静',4,'晚饭后散了个步，心里松一点了',[],'listen','walk','better'],[0,10,'焦虑',3,'今天要交论文初稿，还差一个结论',['学业'],'act','step','better']];
+ const entries=s.map((r,i)=>{const t=now-r[0]*D-(new Date().getHours()-r[1])*36e5;return{id:'s'+i,t:Math.min(t,now-6e5),mood:r[2],lvl:r[3],text:r[4],triggers:r[5],mode:r[6],tool:r[7],fb:r[8],reply:makeReply({mood:r[2],lvl:r[3],text:r[4],triggers:r[5],mode:r[6]})}}).sort((a,b)=>b.t-a.t);
+ const toolLog=entries.filter(e=>e.tool&&e.fb).map(e=>({tool:e.tool,fb:e.fb,t:e.t}));
+ return{entries,toolLog,sample:true};
+}
+
+/* ========== 工具函数 ========== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1800)}
+function fmt(t){const d=new Date(t),n=new Date();const hm=d.toTimeString().slice(0,5);const dd=Math.round((new Date(n.toDateString())-new Date(d.toDateString()))/864e5);return(dd===0?'今天':dd===1?'昨天':`${d.getMonth()+1}月${d.getDate()}日`)+' '+hm}
+function detect(text){return Object.keys(TRIG).filter(k=>TRIG[k].test(text||''))}
+function score(e){const v=MOOD[e.mood]?.v??0;return Math.max(1,Math.min(5,3+v*(.4*e.lvl)))}
+function effect(){const m={};(DB.toolLog||[]).forEach(l=>{m[l.tool]=m[l.tool]||{n:0,good:0,bad:0};m[l.tool].n++;if(l.fb==='better')m[l.tool].good++;if(l.fb==='worse')m[l.tool].bad++});return m}
+
+/* ========== 推荐 & 回应（原型：本地规则生成） ========== */
+function recommend(e){
+ const list=REC[e.mood]||REC['说不清'],eff=effect(),sc={};
+ Object.keys(TOOLS).forEach(id=>{let s=0,why='';const i=list.indexOf(id);if(i>=0){s+=10-i*1.5;why=`适合${e.mood}的时候`}
+  if((MODECAT[e.mode]||[]).includes(TOOLS[id].cat))s+=3;
+  (e.triggers||[]).forEach(t=>{if((TRIGBOOST[t]||[]).includes(id)){s+=2;why=why||`常用于缓解${t}压力`}});
+  const f=eff[id];if(f&&f.n>=2){const r=(f.good-f.bad)/f.n;s+=r*5;if(r>.5)why=`之前 ${f.n} 次里有 ${f.good} 次让你好一点`}
+  sc[id]={s,why}});
+ return Object.keys(sc).sort((a,b)=>sc[b].s-sc[a].s).slice(0,3).map(id=>({id,why:sc[id].why}));
+}
+const SCENE={学业:'学业的压力常常是一件接一件的',工作:'工作上的事很容易一直挂在心上',人际:'和人有关的事最容易让人反复去想',家庭:'家里的事往往最难说出口',恋爱:'感情里的起伏很牵动人',身体:'身体不舒服的时候，情绪也会跟着变重',睡眠:'没睡好的时候，什么事都会显得更难',金钱:'钱的压力很现实，也很磨人'};
+const FEEL={焦虑:'心里悬着、静不下来',低落:'提不起劲、心里沉沉的',烦躁:'憋着一股火',疲惫:'累到不想动',说不清:'有点乱、说不太清楚',平静:'挺平静',开心:'开心',感激:'心里暖暖的'};
+const WORRY={学业:'担心结果不好，或者觉得时间不够用',工作:'担心被评价、怕自己做不好',人际:'在意别人怎么看你，或担心关系会变',家庭:'想被理解，又怕起冲突',恋爱:'担心失去，或不确定对方的想法',身体:'担心身体，或因为不舒服做不了事',睡眠:'担心明天的状态撑不住',金钱:'担心不够用、没有安全感'};
+function makeReply(e){
+ const t=(e.triggers||[])[0],txt=(e.text||'').trim(),pos=['平静','开心','感激'].includes(e.mood);
+ const q=txt?`「${txt.length>26?txt.slice(0,26)+'…':txt}」`:'';
+ const feel=FEEL[e.mood]||'有些复杂';
+ if(e.mode==='clarify'){
+  return `我们试着把它分开来看：\n\n· 发生的事：${txt||'还没写，没关系'}\n· 你的感受：${e.mood||'说不清'}，强度 ${e.lvl}/5\n· 背后可能的担心：${pos?'没有担心也很好，可以想想是什么让你这样':(WORRY[t]||'还没找到具体的点，这很正常')}\n\n${pos?'记下让你感觉好的事情，以后难受时可以回来看看。':'想一想：这里面哪一部分是你现在能影响的？哪一部分可以先放一放？'}`;
+ }
+ if(e.mode==='act'){
+  return pos?`${q?'看到你写'+q+'，':''}真好。趁现在状态不错，可以做一件小事把这份感觉留住：比如出去走走，或者给自己写一句话。`
+   :`${q?'关于'+q+'，':''}先不用一次解决全部。${e.lvl>=4?'现在情绪比较满，先让身体缓下来，再处理事情。':'选一件 5 分钟内能做到的小事就够了。'}\n\n下面是为你挑的几个方法，按你现在的状态排了序。做完回来告诉我感觉怎么样。`;
+ }
+ if(pos)return `${q?'听你说'+q+'，':''}真替你高兴。这种${feel}的时刻值得被好好记住。\n\n愿意多说一点吗？今天是什么让你有这样的感觉？`;
+ return `${q?'你写下了'+q+'。':''}${SCENE[t]?SCENE[t]+'，':''}会觉得${feel}，是很自然的反应，不代表你不够好。\n\n${e.lvl>=4?'听起来这次挺重的。谢谢你愿意先停下来写一写。':'能把它说出来，已经是在照顾自己了。'}\n\n如果愿意，可以再说说：这件事里最让你难受的是哪一部分？`;
+}
+const FOLLOW=['嗯，我听到了。这些感受都是真实的，你不需要马上把它们处理好。','谢谢你愿意继续说。听起来你已经扛了挺久了。','原来是这样。如果换成你最好的朋友遇到这件事，你大概也会心疼 TA 吧？对自己也可以这样。','我在听。累了的话，可以先试试下面的小练习，或者就写到这里也很好。'];
+
+/* ========== 页面：此刻 ========== */
+let draft={mood:null,lvl:3,text:'',tags:new Set(),removed:new Set()},cur=null;
+function greet(){const h=new Date().getHours();return h<5?'夜深了':h<11?'早上好':h<14?'中午好':h<18?'下午好':'晚上好'}
+function renderNow(){
+ if(cur)return renderResult();
+ const auto=detect(draft.text);
+ $('#view').innerHTML=`
+ <h1>${greet()}，你现在感觉怎么样？</h1>
+ <p class="hint">说一句就好。不需要写完整的日记，也不用每天都来。</p>
+ <div class="card">
+  <div class="label">此刻的心情 <small>选一个最接近的</small></div>
+  <div class="moods">${MOODS.map(m=>`<div class="mood ${draft.mood===m.k?'on':''}" data-mood="${m.k}"><b>${m.e}</b>${m.k}</div>`).join('')}</div>
+  <div class="levels ${draft.mood?'':'hide'}"><span>强度</span>${[1,2,3,4,5].map(i=>`<button class="lv ${draft.lvl===i?'on':''}" data-lv="${i}">${i}</button>`).join('')}</div>
+ </div>
+ <div class="card">
+  <div class="label">发生了什么？ <small>可以跳过</small></div>
+  <textarea id="txt" rows="3" placeholder="比如：明天要汇报，怕自己讲不好">${esc(draft.text)}</textarea>
+  <div class="label" style="margin:12px 0 8px">可能和什么有关 <small>✦ 为你自动识别</small></div>
+  <div class="tags" id="tags">${TRIGS.map(k=>`<span class="tag ${draft.tags.has(k)?'on':''} ${auto.includes(k)?'auto':''}" data-tag="${k}">${k}</span>`).join('')}</div>
+ </div>
+ <div class="card">
+  <div class="label">你现在更需要…</div>
+  <div class="modes">${Object.entries(MODES).map(([k,m])=>`<button class="mode" data-mode="${k}"><span class="ic">${m.ic}</span><div><b>${m.n}</b><span>${m.d}</span></div></button>`).join('')}</div>
+ </div>
+ <button class="sos" data-act="sos">现在很难受，需要马上找人聊聊？</button>
+ <p class="foot">🔒 记录只保存在你自己的浏览器里，不会上传。<br>原型阶段的回应由本地规则生成；缓一缓是自助工具，不能替代专业心理咨询或医疗。</p>`;
+ const ta=$('#txt');
+ ta.oninput=()=>{draft.text=ta.value;const a=detect(ta.value);a.forEach(k=>{if(!draft.removed.has(k))draft.tags.add(k)});
+  document.querySelectorAll('#tags .tag').forEach(el=>{const k=el.dataset.tag;el.classList.toggle('auto',a.includes(k));el.classList.toggle('on',draft.tags.has(k))})};
+}
+function submit(mode){
+ draft.text=($('#txt')?.value||'').trim();
+ if(!draft.mood&&!draft.text){toast('选个心情，或写一句话就好');return}
+ const e={id:'e'+Date.now(),t:Date.now(),mood:draft.mood||'说不清',lvl:draft.mood?draft.lvl:3,text:draft.text,triggers:[...draft.tags].filter(k=>k!=='说不清'),mode,tool:null,fb:null,follow:[]};
+ e.reply=makeReply(e);e.recs=recommend(e);
+ DB.entries.unshift(e);save();cur=e;
+ draft={mood:null,lvl:3,text:'',tags:new Set(),removed:new Set()};
+ renderNow();window.scrollTo(0,0);
+ if(CRISIS.test(e.text))setTimeout(openSOS,300);
+}
+function renderResult(){
+ const e=cur,m=MOOD[e.mood];
+ $('#view').innerHTML=`
+ <div class="row" style="justify-content:space-between;align-items:center"><h2>${m.e} ${e.mood} · ${e.lvl}/5</h2><button class="btn ghost sm" data-act="new">＋ 新记录</button></div>
+ <p class="hint">${MODES[e.mode].ic} ${MODES[e.mode].n}${e.triggers.length?' · '+e.triggers.join('、'):''}</p>
+ ${e.text?`<div class="me">${esc(e.text)}</div>`:''}
+ <div class="card">
+  <div class="who"><i></i>缓一缓</div>
+  <div class="bubble">${esc(e.reply)}</div>
+  ${(e.follow||[]).map(f=>`<div class="me">${esc(f.q)}</div><div class="bubble">${esc(f.a)}</div>`).join('')}
+  <div style="display:flex;gap:8px;margin-top:12px"><input type="text" id="more" placeholder="还想说点什么…（可选）"><button class="btn sm" data-act="more">发送</button></div>
+ </div>
+ <div class="sec"><h3>为你推荐的小练习</h3><span>点开就能做</span></div>
+ <div class="tools">${e.recs.map(r=>toolCard(r.id,r.why)).join('')}</div>
+ <div class="card">
+  <div class="label">现在感觉怎么样？ <small>选不选都可以</small></div>
+  ${fbButtons(e.fb)}
+ </div>
+ <div class="row" style="margin-top:14px"><button class="btn ghost" data-act="tab-review">去日记里看看</button><button class="btn" data-act="new">好，先到这里</button></div>
+ <p class="foot">这条记录已自动保存。</p>`;
+}
+function fbButtons(sel){return`<div class="fb">${[['better','🙂','好一点了'],['same','😐','差不多'],['worse','😣','更难受了']].map(([k,e,n])=>`<button class="${sel===k?'on':''}" data-fb="${k}"><b>${e}</b>${n}</button>`).join('')}</div>`}
+function toolCard(id,why){const t=TOOLS[id];return`<button class="tool" data-tool="${id}"><span class="ti c${t.cat}">${t.ic}</span><div><b>${t.name}</b><div class="meta">${t.cat} · ${t.time} · ${t.desc}</div>${why?`<div class="why">✦ ${why}</div>`:''}</div></button>`}
+
+/* ========== 页面：工具箱 ========== */
+function renderTools(){
+ const eff=effect();
+ $('#view').innerHTML=`<h1>自我关怀工具箱</h1><p class="hint">不用等到很难受才用。每个练习都很短，随时可以停。</p>
+ ${CATS.map(c=>`<div class="sec"><h3>${{冥想:'🫧 呼吸与冥想',声音:'🎧 声音陪伴',运动:'🏃 动一动身体',理一理:'🧩 理一理思绪'}[c]}</h3><span>${{冥想:'让身体先慢下来',声音:'网页实时生成，无需下载',运动:'把情绪从身体里释放',理一理:'认知与自我关怀'}[c]}</span></div>
+ <div class="tools">${Object.keys(TOOLS).filter(id=>TOOLS[id].cat===c).map(id=>toolCard(id,eff[id]&&eff[id].n?`用过 ${eff[id].n} 次，${eff[id].good} 次好一点`:'')).join('')}</div>`).join('')}
+ <p class="foot">练习结束后可以记一下感受，缓一缓会慢慢了解哪种方法最适合你。</p>`;
+}
+
+/* ========== 页面：回看 ========== */
+function renderReview(){
+ const E=DB.entries,now=Date.now(),D=864e5;
+ const recent=E.filter(e=>now-e.t<14*D);
+ const cnt=(arr,f)=>{const m={};arr.forEach(x=>[].concat(f(x)).forEach(k=>{if(k)m[k]=(m[k]||0)+1}));return Object.entries(m).sort((a,b)=>b[1]-a[1])};
+ const moodC=cnt(recent,e=>e.mood),trigC=cnt(recent,e=>e.triggers);
+ const neg=recent.filter(e=>MOOD[e.mood].v<0);
+ // 趋势
+ const days=[];for(let i=13;i>=0;i--){const d=new Date(now-i*D);const ds=d.toDateString();const es=E.filter(e=>new Date(e.t).toDateString()===ds);days.push({d,es,s:es.length?es.reduce((a,e)=>a+score(e),0)/es.length:null})}
+ const W=320,H=130,x=i=>18+i*(W-30)/13,y=s=>H-18-(s-1)/4*(H-34);
+ const pts=days.map((d,i)=>d.s?[x(i),y(d.s),d]:null).filter(Boolean);
+ const svg=`<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="近14天心情走势">
+  ${[1,3,5].map(s=>`<line x1="16" x2="${W-6}" y1="${y(s)}" y2="${y(s)}" stroke="#EEDFD0" stroke-dasharray="3 4"/>`).join('')}
+  <text x="0" y="${y(5)+4}" font-size="10" fill="#8C7A6E">好</text><text x="0" y="${y(1)+4}" font-size="10" fill="#8C7A6E">难</text>
+  <polyline fill="none" stroke="#F2B58C" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${pts.map(p=>p[0]+','+p[1]).join(' ')}"/>
+  ${pts.map(p=>{const top=p[2].es.slice().sort((a,b)=>b.lvl-a.lvl)[0];return`<circle cx="${p[0]}" cy="${p[1]}" r="5.5" fill="${MOOD[top.mood].c}" stroke="#fff" stroke-width="2"><title>${p[2].d.getMonth()+1}/${p[2].d.getDate()} ${top.mood}</title></circle>`}).join('')}
+  ${[0,6,13].map(i=>`<text x="${x(i)}" y="${H-2}" font-size="10" fill="#8C7A6E" text-anchor="middle">${i===13?'今天':(days[i].d.getMonth()+1)+'/'+days[i].d.getDate()}</text>`).join('')}
+ </svg>`;
+ // 洞察
+ const ins=[];
+ trigC.slice(0,2).forEach(([t,n])=>{const es=recent.filter(e=>e.triggers.includes(t));const mc=cnt(es,e=>e.mood)[0];if(mc&&n>=2)ins.push(['🔍',`和「${t}」有关的 ${n} 次记录里，有 ${mc[1]} 次是<b>${mc[0]}</b>。`])});
+ const hi=neg.filter(e=>new Date(e.t).getHours()>=21||new Date(e.t).getHours()<3);
+ if(neg.length>=3&&hi.length/neg.length>=.4)ins.push(['🌙',`${Math.round(hi.length/neg.length*100)}% 的难受时刻出现在晚上 9 点以后，睡前可以试试 4-7-8 呼吸或雨声。`]);
+ const eff=effect(),best=Object.entries(eff).filter(([,f])=>f.n>=2).sort((a,b)=>(b[1].good/b[1].n)-(a[1].good/a[1].n))[0];
+ if(best)ins.push(['🌱',`对你最有效的是<b>${TOOLS[best[0]].name}</b>：用了 ${best[1].n} 次，${best[1].good} 次觉得好一点。`]);
+ const avg=a=>a.length?a.reduce((s,e)=>s+score(e),0)/a.length:null;
+ const w1=avg(E.filter(e=>now-e.t<7*D)),w2=avg(E.filter(e=>now-e.t>=7*D&&now-e.t<14*D));
+ if(w1&&w2)ins.push([w1>=w2?'☀️':'🫂',w1>=w2?`这周的整体心情比上周<b>回升了一些</b>，你做得很好。`:`这周比上周辛苦一些，记得对自己温柔一点。`]);
+ if(!ins.length)ins.push(['📝','多记录几次，这里会出现属于你的情绪规律。']);
+ const maxT=trigC[0]?trigC[0][1]:1;
+ $('#view').innerHTML=`<h1>回看自己</h1><p class="hint">看见规律，是照顾自己的第一步。</p>
+ ${DB.sample?`<div class="banner"><span>当前为示例数据，方便你预览分析效果</span><button data-act="clear">清空并开始</button></div>`:''}
+ <div class="card"><div class="stats"><div><b>${recent.length}</b><span>近 14 天记录</span></div><div><b>${moodC[0]?MOOD[moodC[0][0]].e+' '+moodC[0][0]:'—'}</b><span>最常出现</span></div><div><b>${trigC[0]?trigC[0][0]:'—'}</b><span>最常见触发</span></div></div></div>
+ <div class="sec"><h3>心情走势</h3><span>近 14 天 · 点的颜色是当天主要情绪</span></div>
+ <div class="card" style="margin-top:0">${svg}<div class="tags" style="margin-top:8px;gap:10px">${MOODS.filter(m=>recent.some(e=>e.mood===m.k)).map(m=>`<span style="font-size:12px;color:#8C7A6E"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${m.c};margin-right:4px"></span>${m.k}</span>`).join('')}</div></div>
+ <div class="sec"><h3>情绪触发因素</h3><span>是什么在影响你</span></div>
+ <div class="card" style="margin-top:0">${trigC.length?trigC.map(([t,n])=>{const es=recent.filter(e=>e.triggers.includes(t));const mc=cnt(es,e=>e.mood)[0];return`<div class="bar"><span class="n">${t}</span><div class="track"><div class="fill" style="width:${n/maxT*100}%"></div></div><span class="c">${n} 次 · 多为${mc[0]}</span></div>`}).join(''):'<p class="hint">还没有足够的记录</p>'}</div>
+ <div class="sec"><h3>给你的发现</h3><span>根据记录和练习反馈</span></div>
+ <div class="card" style="margin-top:0">${ins.map(([i,t])=>`<div class="insight"><i>${i}</i><div>${t}</div></div>`).join('')}</div>
+ <div class="sec"><h3>情绪日记</h3><span>共 ${E.length} 条 · 点开可编辑</span></div>
+ <div class="card" style="margin-top:0;padding-top:4px;padding-bottom:4px">${E.length?E.map(e=>`<div class="entry" data-entry="${e.id}"><span class="em">${MOOD[e.mood].e}</span><div style="flex:1;min-width:0"><div class="mt">${fmt(e.t)} · ${e.mood} ${e.lvl}/5${e.triggers.map(t=>`<span class="pill">${t}</span>`).join('')}${e.fb==='better'?' 🙂':e.fb==='worse'?' 😣':''}</div><div class="tx">${esc(e.text)||'<span style="color:#8C7A6E">（只记录了心情）</span>'}</div></div></div>`).join(''):'<p class="hint" style="padding:12px 0">还没有记录，去「此刻」写下第一句吧。</p>'}</div>
+ <div class="sec"><h3>数据与隐私</h3></div>
+ <div class="card" style="margin-top:0;font-size:13.5px;color:#8C7A6E">所有记录只保存在当前浏览器（localStorage），不会上传到任何服务器。换设备或清除浏览器数据后记录会消失。
+ <div class="row" style="margin-top:12px"><button class="btn ghost sm" data-act="clear">清空所有记录</button><button class="btn ghost sm" data-act="demo">载入示例数据</button></div></div>`;
+}
+
+/* ========== 弹层 ========== */
+function openSheet(html){$('#sheet').innerHTML=`<button class="x" data-act="close">✕</button>`+html;$('#mask').classList.add('show')}
+function closeSheet(){stopAll();$('#mask').classList.remove('show')}
+function openSOS(){openSheet(`<h2>你不是一个人</h2><p class="hint">如果你有伤害自己的念头，或觉得撑不下去了，请现在就联系专业的人。他们愿意听你说。</p>
+ <div class="crisis"><b>📞 立即可拨打</b>
+ <a href="tel:12356"><span>全国心理援助热线</span><b>12356</b></a>
+ <a href="tel:4001619995"><span>希望 24 热线（24 小时）</span><b>400-161-9995</b></a>
+ <a href="tel:120"><span>有生命危险，请拨打急救</span><b>120 / 110</b></a></div>
+ <p style="font-size:14px">也可以现在给一个信任的人发消息，只需要说：「我现在状态不太好，能陪我聊聊吗？」</p>
+ <button class="btn block" style="margin-top:14px" data-tool="ground">先和我一起做 3 分钟着陆练习</button>`)}
+function openEntry(id){const e=DB.entries.find(x=>x.id===id);if(!e)return;
+ openSheet(`<h2>${MOOD[e.mood].e} ${e.mood} · ${e.lvl}/5</h2><p class="hint">${fmt(e.t)} · ${MODES[e.mode]?.n||''}${e.triggers.length?' · '+e.triggers.join('、'):''}</p>
+ <div class="label" style="margin-top:14px">我写下的</div><textarea id="edit" rows="3">${esc(e.text)}</textarea>
+ <div class="label" style="margin-top:14px">当时的回应</div><div class="bubble">${esc(e.reply)}</div>
+ ${e.tool?`<p class="hint" style="margin-top:10px">做过的练习：${TOOLS[e.tool].name}${e.fb?' · 之后感觉'+{better:'好一点了',same:'差不多',worse:'更难受了'}[e.fb]:''}</p>`:''}
+ <div class="row" style="margin-top:16px"><button class="btn ghost" data-act="del" data-id="${e.id}">删除</button><button class="btn" data-act="saveedit" data-id="${e.id}">保存修改</button></div>`)}
+
+/* ========== 练习播放器 ========== */
+let timers=[],AC=null,snd=null,curTool=null;
+function stopAll(){timers.forEach(t=>{clearTimeout(t);clearInterval(t)});timers=[];if(snd){snd.stop();snd=null}}
+function openTool(id){stopAll();curTool=id;const t=TOOLS[id];
+ const head=`<h2>${t.ic} ${t.name}</h2><p class="hint">${t.desc}</p>`;
+ if(t.type==='breath'){openSheet(head+`<div class="stage"><div class="orb" id="orb">准备</div><div id="ph" class="hint">找一个舒服的姿势，点开始</div></div><button class="btn block" id="go">开始</button>`);
+  $('#go').onclick=()=>{$('#go').classList.add('hide');let r=0,i=0;const orb=$('#orb');
+   const tick=()=>{if(r>=t.rounds)return done();const[n,s]=t.pattern[i];orb.style.transitionDuration=s+'s';orb.style.transform=n.includes('吸')?'scale(1)':n.includes('呼')?'scale(.6)':orb.style.transform;let left=s;orb.textContent=n;$('#ph').textContent=`第 ${r+1}/${t.rounds} 轮 · ${left} 秒`;
+    const iv=setInterval(()=>{left--;if(left>0)$('#ph').textContent=`第 ${r+1}/${t.rounds} 轮 · ${left} 秒`},1000);timers.push(iv);
+    timers.push(setTimeout(()=>{clearInterval(iv);i++;if(i>=t.pattern.length){i=0;r++}tick()},s*1000))};tick()}}
+ else if(t.type==='steps'){let i=0;openSheet(head+`<div class="stage"><div class="big" id="se"></div><h2 id="st"></h2><p id="sx" style="min-height:52px;font-size:15px"></p><div class="prog"><div id="sp"></div></div><div class="hint" id="sc"></div></div><div class="row"><button class="btn ghost" id="prev">上一步</button><button class="btn" id="next">下一步</button></div>`);
+  const show=()=>{stopAll();if(i>=t.steps.length)return done();const[e,ti,tx,s]=t.steps[i];$('#se').textContent=e;$('#st').textContent=`${i+1}/${t.steps.length} · ${ti}`;$('#sx').textContent=tx;let left=s;const sp=$('#sp');sp.style.transition='none';sp.style.width='0';
+   requestAnimationFrame(()=>{sp.style.transition='width 1s linear'});const up=()=>{$('#sc').textContent=left>=60?`${Math.floor(left/60)} 分 ${left%60} 秒`:`${left} 秒`;sp.style.width=((s-left)/s*100)+'%'};up();
+   timers.push(setInterval(()=>{left--;up();if(left<=0){i++;show()}},1000));$('#next').textContent=i===t.steps.length-1?'完成':'下一步'};
+  $('#prev').onclick=()=>{if(i>0){i--;show()}};$('#next').onclick=()=>{i++;show()};show()}
+ else if(t.type==='sound'){openSheet(head+`<div class="wave" id="wv">${Array.from({length:14},(_,k)=>`<i style="animation-delay:${k*.09}s"></i>`).join('')}</div><p class="hint" style="text-align:center" id="el">点击播放，戴上耳机效果更好</p><div class="row" style="margin-top:14px"><button class="btn" id="pl">▶ 播放</button><button class="btn ghost" id="fin">听好了</button></div>`);
+  let sec=0;$('#pl').onclick=()=>{if(snd){snd.stop();snd=null;$('#wv').classList.remove('on');$('#pl').textContent='▶ 播放';stopAll();return}playSound(t.sound);$('#wv').classList.add('on');$('#pl').textContent='❚❚ 暂停';timers.push(setInterval(()=>{sec++;$('#el').textContent=`已经陪你 ${Math.floor(sec/60)} 分 ${sec%60} 秒`},1000))};
+  $('#fin').onclick=()=>{stopAll();done()}}
+ else if(t.type==='think'){openSheet(head+`<div class="label" style="margin-top:14px">1. 现在最让你烦的那件事是？</div><input type="text" id="k1" placeholder="比如：论文还差结论没写">
+  <div class="label" style="margin-top:12px">2. 里面哪一部分是你能控制的？</div><input type="text" id="k2" placeholder="比如：先列出结论的 3 个要点">
+  <div class="label" style="margin-top:12px">3. 5 分钟内能做的最小一步是？</div><input type="text" id="k3" placeholder="比如：打开文档，写下第一句话">
+  <button class="btn block" style="margin-top:16px" id="kgo">就做这一步</button>`);
+  $('#kgo').onclick=()=>{const v=$('#k3').value.trim()||$('#k2').value.trim();if(!v)return toast('写下一小步就好');$('#sheet').innerHTML=`<button class="x" data-act="close">✕</button><div class="stage"><div class="big">🧩</div><h2>你的一小步</h2><div class="letter" style="text-align:left">${esc(v)}</div><p class="hint">不用想后面的事，先完成这一步。做完回来看看感觉。</p></div>${fbButtons()}`}}
+ else if(t.type==='kind'){openSheet(head+`<div class="label" style="margin-top:14px">如果你最好的朋友遇到和你一样的事，你会对 TA 说什么？</div><textarea id="kd" rows="4" placeholder="比如：你已经很努力了，一次没做好不代表你不行……"></textarea><button class="btn block" style="margin-top:14px" id="kgo">把这句话送给自己</button>`);
+  $('#kgo').onclick=()=>{const v=$('#kd').value.trim();if(!v)return toast('写一句就好');$('#sheet').innerHTML=`<button class="x" data-act="close">✕</button><div class="stage"><div class="big">💌</div><h2>给自己的一封短信</h2></div><div class="letter">亲爱的我：\n${esc(v)}\n\n—— ${new Date().getMonth()+1}月${new Date().getDate()}日，来自也在努力的自己</div><p class="hint" style="text-align:center;margin-bottom:12px">写完之后，感觉怎么样？</p>${fbButtons()}`}}
+}
+function done(){stopAll();$('#sheet').innerHTML=`<button class="x" data-act="close">✕</button><div class="stage"><div class="big">🌱</div><h2>完成了，你照顾了自己一下</h2><p class="hint" style="margin-bottom:14px">现在感觉怎么样？这会帮助缓一缓更了解你。</p></div>${fbButtons()}`}
+function playSound(kind){
+ AC=AC||new(window.AudioContext||window.webkitAudioContext)();AC.resume();
+ const g=AC.createGain();g.gain.value=0;g.connect(AC.destination);g.gain.linearRampToValueAtTime(kind==='pad'?.9:.45,AC.currentTime+1.5);
+ let stopper;
+ if(kind==='pad'){const chords=[[130.8,261.6,329.6,392],[110,220,261.6,329.6],[87.3,174.6,220,261.6],[98,196,246.9,293.7]];
+  const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=1400;lp.connect(g);
+  const play=i=>chords[i%4].forEach(f=>{const o=AC.createOscillator(),og=AC.createGain();o.type='triangle';o.frequency.value=f;const t0=AC.currentTime;og.gain.setValueAtTime(0,t0);og.gain.linearRampToValueAtTime(.07,t0+2.5);og.gain.linearRampToValueAtTime(0,t0+8);o.connect(og);og.connect(lp);o.start(t0);o.stop(t0+8.2)});
+  let ci=0;play(ci++);const iv=setInterval(()=>play(ci++),6000);stopper=()=>clearInterval(iv)}
+ else{const len=AC.sampleRate*3,b=AC.createBuffer(1,len,AC.sampleRate),d=b.getChannelData(0);let last=0;
+  for(let i=0;i<len;i++){const w=Math.random()*2-1;if(kind==='brown'){last=(last+.02*w)/1.02;d[i]=last*3.5}else d[i]=w*.6}
+  const s=AC.createBufferSource();s.buffer=b;s.loop=true;let n=s;
+  if(kind==='rain'){const hp=AC.createBiquadFilter();hp.type='highpass';hp.frequency.value=400;const lp=AC.createBiquadFilter();lp.type='lowpass';lp.frequency.value=2600;s.connect(hp);hp.connect(lp);n=lp;
+   const lfo=AC.createOscillator(),lg=AC.createGain();lfo.frequency.value=.12;lg.gain.value=.12;lfo.connect(lg);lg.connect(g.gain);lfo.start();}
+  n.connect(g);s.start();stopper=()=>{try{s.stop()}catch(e){}}}
+ snd={stop:()=>{const t=AC.currentTime;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(g.gain.value,t);g.gain.linearRampToValueAtTime(0,t+.4);setTimeout(()=>{stopper();g.disconnect()},500)}};
+}
+function recordFb(fb){
+ if(curTool){DB.toolLog=DB.toolLog||[];DB.toolLog.push({tool:curTool,fb,t:Date.now()});if(cur&&!cur.tool){cur.tool=curTool}}
+ if(cur){cur.fb=fb;const e=DB.entries.find(x=>x.id===cur.id);if(e){e.fb=fb;e.tool=cur.tool}}
+ save();
+}
+
+/* ========== 事件 ========== */
+let tab='now';
+function go(t){tab=t;document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));({now:renderNow,tools:renderTools,review:renderReview})[t]();window.scrollTo(0,0)}
+document.addEventListener('click',ev=>{
+ const el=ev.target.closest('[data-tab],[data-mood],[data-lv],[data-tag],[data-mode],[data-tool],[data-fb],[data-entry],[data-act]');if(!el)return;
+ const d=el.dataset;
+ if(d.tab)return go(d.tab);
+ if(d.mood){draft.text=$('#txt')?.value||draft.text;draft.mood=draft.mood===d.mood?null:d.mood;return renderNow()}
+ if(d.lv){draft.lvl=+d.lv;document.querySelectorAll('.lv').forEach(b=>b.classList.toggle('on',+b.dataset.lv===draft.lvl));return}
+ if(d.tag){const k=d.tag;if(draft.tags.has(k)){draft.tags.delete(k);draft.removed.add(k)}else{draft.tags.add(k);draft.removed.delete(k)}el.classList.toggle('on');return}
+ if(d.mode)return submit(d.mode);
+ if(d.tool)return openTool(d.tool);
+ if(d.fb){const inSheet=el.closest('#sheet');if(inSheet){recordFb(d.fb);closeSheet();toast(d.fb==='worse'?'辛苦了，换一个方法试试，或者联系信任的人':'已记下，谢谢你照顾自己');if(tab==='now')renderNow();else go(tab);if(d.fb==='worse'&&cur)setTimeout(()=>{},0);return}
+  curTool=null;recordFb(d.fb);el.parentNode.querySelectorAll('button').forEach(b=>b.classList.toggle('on',b===el));
+  toast(d.fb==='better'?'真好，已经保存到日记':d.fb==='worse'?'抱歉没能帮上忙，试试另一个练习？':'已保存，慢慢来');if(d.fb==='worse')setTimeout(openSOSlite,600);return}
+ if(d.entry)return openEntry(d.entry);
+ const a=d.act;
+ if(a==='close')return closeSheet();
+ if(a==='sos')return openSOS();
+ if(a==='new'){cur=null;return go('now')}
+ if(a==='tab-review'){cur=null;return go('review')}
+ if(a==='more'){const v=$('#more').value.trim();if(!v)return;cur.follow=cur.follow||[];const extra=CRISIS.test(v);cur.follow.push({q:v,a:extra?'谢谢你告诉我这些，你现在的感受很重要。请先联系能马上帮到你的人，下面的热线 24 小时都有人在。':FOLLOW[cur.follow.length%FOLLOW.length]});cur.text+=(cur.text?'\n':'')+v;const nt=detect(v).filter(k=>!cur.triggers.includes(k));cur.triggers.push(...nt);save();renderResult();if(extra)setTimeout(openSOS,300);return}
+ if(a==='del'){if(!confirm('确定删除这条记录吗？'))return;DB.entries=DB.entries.filter(e=>e.id!==d.id);save();closeSheet();toast('已删除');return go('review')}
+ if(a==='saveedit'){const e=DB.entries.find(x=>x.id===d.id);e.text=$('#edit').value.trim();const nt=detect(e.text).filter(k=>!e.triggers.includes(k));e.triggers.push(...nt);save();closeSheet();toast('已保存');return go('review')}
+ if(a==='clear'){if(!confirm('清空后无法恢复，确定吗？'))return;DB={entries:[],toolLog:[],sample:false};save();cur=null;toast('已清空，从今天开始吧');return go('review')}
+ if(a==='demo'){DB=sample();save();toast('已载入示例数据');return go('review')}
+});
+function openSOSlite(){openSheet(`<h2>没关系，有时候就是会更难受</h2><p class="hint">这不是你的错。可以试试另一种方式，或者找人聊聊。</p>
+ <div class="tools" style="margin-top:14px">${['ground','walk','kind'].filter(id=>id!==cur?.tool).slice(0,2).map(id=>toolCard(id,'换个方式试试')).join('')}</div>
+ <button class="sos" data-act="sos">需要找专业的人聊聊 →</button>`)}
+$('#mask').addEventListener('click',e=>{if(e.target.id==='mask')closeSheet()});
+$('#today').textContent=new Date().toLocaleDateString('zh-CN',{month:'long',day:'numeric',weekday:'short'});
+load();go('now');
+</script>
+</body>
+</html>
