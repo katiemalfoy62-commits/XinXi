@@ -44,7 +44,7 @@ textarea:focus,input[type=text]:focus{border-color:var(--accent2)}
 .mode span{font-size:12px;color:var(--sub)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;border-radius:14px;padding:11px 16px;font-size:15px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff}
 .btn.ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
-.btn.sm{padding:7px 12px;font-size:13px;border-radius:11px}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:11px;white-space:nowrap;flex:none}
 .btn.block{width:100%}
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .row>.btn{flex:1}
@@ -312,7 +312,7 @@ function renderReview(){
  trigC.slice(0,2).forEach(([t,n])=>{const es=recent.filter(e=>e.triggers.includes(t));const mc=cnt(es,e=>e.mood)[0];if(mc&&n>=2)ins.push(['🔍',`和「${t}」有关的 ${n} 次记录里，有 ${mc[1]} 次是<b>${mc[0]}</b>。`])});
  const hi=neg.filter(e=>new Date(e.t).getHours()>=21||new Date(e.t).getHours()<3);
  if(neg.length>=3&&hi.length/neg.length>=.4)ins.push(['🌙',`${Math.round(hi.length/neg.length*100)}% 的难受时刻出现在晚上 9 点以后，睡前可以试试 4-7-8 呼吸或雨声。`]);
- const eff=effect(),best=Object.entries(eff).filter(([,f])=>f.n>=2).sort((a,b)=>(b[1].good/b[1].n)-(a[1].good/a[1].n))[0];
+ const eff=effect(),best=Object.entries(eff).filter(([,f])=>f.n>=2).sort((a,b)=>(b[1].good/b[1].n)-(a[1].good/a[1].n)||b[1].n-a[1].n)[0];
  if(best)ins.push(['🌱',`对你最有效的是<b>${TOOLS[best[0]].name}</b>：用了 ${best[1].n} 次，${best[1].good} 次觉得好一点。`]);
  const avg=a=>a.length?a.reduce((s,e)=>s+score(e),0)/a.length:null;
  const w1=avg(E.filter(e=>now-e.t<7*D)),w2=avg(E.filter(e=>now-e.t>=7*D&&now-e.t<14*D));
