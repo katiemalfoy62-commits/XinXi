@@ -204,7 +204,8 @@ svg text{font-family:inherit}
 
 <script>
 /* ========== 素材 ========== */
-const IMG=n=>`img/${n}.webp`;
+const ASSET_VER=2; // 替换图片后加 1，避免浏览器用旧缓存
+const IMG=n=>`img/${n}.webp?v=${ASSET_VER}`;
 const SEND_SVG='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>';
 
 /* ========== 数据定义 ========== */
